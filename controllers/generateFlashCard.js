@@ -1,6 +1,9 @@
 const express = require("express");
 const fetch = require("node-fetch");
 const FlashCard = require("../models/flashCard");
+const mongoose = require("mongoose");
+const { Types } = require("mongoose");
+const ObjectId = Types.ObjectId;
 
 async function getUserFlashCard(req, res) {
   try {
@@ -91,7 +94,7 @@ async function getParticularFlashCard(req, res) {
     console.log("flashCardName name from body:", flashCardName);
 
     const flashCard = await FlashCard.findOne({
-      flashgroupName: { $regex: new RegExp(`^${flashCardName}$`, "i") }, // case-insensitive
+      flashGroupName: { $regex: new RegExp(`^${flashCardName}$`, "i") }, // case-insensitive
       userId: new ObjectId(String(userId)), // match type
     });
 
