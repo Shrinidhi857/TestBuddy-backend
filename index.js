@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 const userRoutes = require("./routes/user");
 const quizRoutes = require("./routes/quiz");
+const flashCardRoutes = required("./routes/flashCard");
 
 dotenv.config();
 
@@ -10,6 +11,7 @@ const app = express();
 app.use(express.json());
 app.use("/api/users", userRoutes);
 app.use("/api/quiz", quizRoutes);
+app.use("/api/flashCard", flashCardRoutes);
 
 const PORT = process.env.PORT || 5000;
 
