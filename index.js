@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 const userRoutes = require("./routes/user");
 const quizRoutes = require("./routes/quiz");
-const flashCardRoutes = required("./routes/flashCard");
+const flashCardRoutes = require("./routes/flashCard");
 
 dotenv.config();
 

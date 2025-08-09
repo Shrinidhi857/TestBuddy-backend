@@ -1,17 +1,23 @@
-const mongoose = required("mongoose");
+const mongoose = require("mongoose");
 const flashCardSchema = mongoose.Schema({
   no: {
     type: Number,
     required: true,
   },
-  title: {
+  front: {
     type: String,
     required: true,
   },
-  answer: {
+  back: {
     type: String,
     requried: true,
   },
 });
 
-module.exports = mongoose.model("FlashCard", flashCardSchema);
+const flashCardGroup = new mongoose.Schema({
+  userId: { type: mongoose.Schema.Types.ObjectId, required: true },
+  flashgroupName: { type: String, required: true },
+  flashcards: [flashCardSchema],
+});
+
+module.exports = mongoose.model("FlashCard", flashCardGroup);

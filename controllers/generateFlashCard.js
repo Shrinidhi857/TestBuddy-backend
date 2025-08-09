@@ -1,12 +1,14 @@
 const express = require("express");
 const fetch = require("node-fetch");
+const FlashCard = require("../models/flashCard");
 
 async function getUserFlashCard(req, res) {
   try {
     const text = req.body.text;
-    const FlashCardJson = await GenerateFlashCard(text);
+    const FlashCardJson = await GenerateFlashCard(text); // single n
+    console.log(FlashCardJson);
 
-    if (!FlashCardJsonn) {
+    if (!FlashCardJson) {
       return res.status(500).json({ error: "Failed to generate FlashCard" });
     }
     res.json(FlashCardJson);
@@ -50,7 +52,22 @@ async function GenerateFlashCard(userText) {
   }
 }
 
+async function saveFlashCard(req, res) {
+  const userId = req.user.userId;
+  const { flashgroupName, flashCards } = req.body;
+
+  const newFlashCards = new flashCards({
+    userId,
+    flashgroupName,
+    flashCards,
+  });
+  newFlashCards.save();
+
+  res.json({ message: "FlashCard got Saved!", flashCard: newFlashCards });
+}
+
 module.exports = {
   getUserFlashCard,
   GenerateFlashCard,
+  saveFlashCard,
 };

@@ -1,5 +1,9 @@
 const express = require("express");
 const fetch = require("node-fetch");
+const Quiz = require("../models/quiz");
+const mongoose = require("mongoose");
+const { Types } = require("mongoose");
+const ObjectId = Types.ObjectId;
 
 async function getUserQuery(req, res) {
   try {
@@ -49,8 +53,68 @@ async function GenerateQuiz(userText) {
     return null;
   }
 }
+async function saveQuiz(req, res) {
+  const userId = req.user._id; // now exists because JWT contains _id
+  const { quizName, quizes } = req.body;
+  console.log("❤️Decoded user from token:", req.user);
+
+  try {
+    const newQuiz = new Quiz({
+      userId: req.user._id,
+      quizName: req.body.quizName,
+      quizes: req.body.quizes,
+    });
+
+    await newQuiz.save();
+
+    res.json({ message: "Quiz Saved!", quiz: newQuiz });
+  } catch (err) {
+    console.error("⚠️ Failed to store:", err);
+    res.status(500).json({ message: "Quiz not saved" });
+  }
+}
+
+async function getAllQuiz(req, res) {
+  try {
+    const userId = req.user._id;
+    const quizzes = await Quiz.find({ userId });
+    res.json(quizzes);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+}
+
+async function getParticularQuiz(req, res) {
+  try {
+    const { quizName } = req.body;
+    const userId = req.user._id;
+
+    if (!quizName) {
+      return res.status(400).json({ message: "quizName is required" });
+    }
+
+    console.log("User ID from token:", userId);
+    console.log("Quiz name from body:", quizName);
+
+    const quiz = await Quiz.findOne({
+      quizName: { $regex: new RegExp(`^${quizName}$`, "i") }, // case-insensitive
+      userId: new ObjectId(String(userId)), // match type
+    });
+
+    if (!quiz) {
+      return res.status(404).json({ message: "Quiz not found" });
+    }
+
+    res.json(quiz);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+}
 
 module.exports = {
   getUserQuery,
   GenerateQuiz,
+  saveQuiz,
+  getAllQuiz,
+  getParticularQuiz,
 };

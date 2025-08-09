@@ -20,4 +20,10 @@ const quizSchema = new mongoose.Schema({
   },
 });
 
-module.exports = mongoose.model("Quiz", quizSchema);
+const quizGroup = new mongoose.Schema({
+  userId: { type: mongoose.Schema.Types.ObjectId, required: true },
+  quizName: { type: String, required: true, unique: true },
+  quizes: [quizSchema],
+});
+
+module.exports = mongoose.model("Quiz", quizGroup);
