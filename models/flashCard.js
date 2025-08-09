@@ -16,8 +16,8 @@ const flashCardSchema = mongoose.Schema({
 
 const flashCardGroup = new mongoose.Schema({
   userId: { type: mongoose.Schema.Types.ObjectId, required: true },
-  flashgroupName: { type: String, required: true },
-  flashcards: [flashCardSchema],
+  flashGroupName: { type: String, required: true },
+  flashCards: [flashCardSchema],
 });
 
 module.exports = mongoose.model("FlashCard", flashCardGroup);

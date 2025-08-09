@@ -24,7 +24,7 @@ async function register(req, res) {
 async function login(req, res) {
   const { username, password } = req.body;
   try {
-    const user = await userService.login(username, password); // should return user object
+    const user = await userService.login(username, password);
 
     const token = jwt.sign(
       { _id: user._id, username: user.username },
@@ -45,7 +45,7 @@ async function login(req, res) {
 async function protected(req, res) {
   res.json({
     message: "Access granted to protected route",
-    user: req.user, // now contains _id from token
+    user: req.user,
   });
 }
 

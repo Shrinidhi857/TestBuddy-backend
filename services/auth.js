@@ -1,6 +1,5 @@
 const User = require("../models/user");
 const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
 
 async function register(username, password) {
   const hashedPassword = await bcrypt.hash(password, 10);
@@ -15,11 +14,7 @@ async function login(username, password) {
   const isMatch = await bcrypt.compare(password, user.password);
   if (!isMatch) throw new Error("Invalid credentials");
 
-  const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
-    expiresIn: "1d",
-  });
-
-  return { token, user: { id: user._id, username: user.username } };
+  return user; // ✅ return full mongoose user doc instead of custom object
 }
 
 module.exports = {

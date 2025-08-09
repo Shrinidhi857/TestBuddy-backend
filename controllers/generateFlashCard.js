@@ -53,21 +53,62 @@ async function GenerateFlashCard(userText) {
 }
 
 async function saveFlashCard(req, res) {
-  const userId = req.user.userId;
-  const { flashgroupName, flashCards } = req.body;
+  try {
+    const newFlashCards = new FlashCard({
+      userId: req.user._id,
+      flashGroupName: req.body.flashgroupName,
+      flashCards: req.body.flashCards,
+    });
+    newFlashCards.save();
 
-  const newFlashCards = new flashCards({
-    userId,
-    flashgroupName,
-    flashCards,
-  });
-  newFlashCards.save();
+    res.json({ message: "FlashCard got Saved!", flashCard: newFlashCards });
+  } catch (err) {
+    console.error("⚠️ Failed to store:", err);
+    res.status(500).json({ message: "FlashCard not saved" });
+  }
+}
 
-  res.json({ message: "FlashCard got Saved!", flashCard: newFlashCards });
+async function getAllFlashCards(req, res) {
+  try {
+    const userId = req.user._id;
+    const flashCards = await FlashCard.find({ userId });
+    res.json(flashCards);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+}
+
+async function getParticularFlashCard(req, res) {
+  try {
+    const { flashCardName } = req.body;
+    const userId = req.user._id;
+
+    if (!flashCardName) {
+      return res.status(400).json({ message: "flashCardName is required" });
+    }
+
+    console.log("User ID from token:", userId);
+    console.log("flashCardName name from body:", flashCardName);
+
+    const flashCard = await FlashCard.findOne({
+      flashgroupName: { $regex: new RegExp(`^${flashCardName}$`, "i") }, // case-insensitive
+      userId: new ObjectId(String(userId)), // match type
+    });
+
+    if (!flashCard) {
+      return res.status(404).json({ message: "FlashCard  not found" });
+    }
+
+    res.json(flashCard);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
 }
 
 module.exports = {
   getUserFlashCard,
   GenerateFlashCard,
   saveFlashCard,
+  getAllFlashCards,
+  getParticularFlashCard,
 };
