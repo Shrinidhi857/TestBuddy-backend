@@ -1,11 +1,8 @@
 const express = require("express");
 const router = express.Router();
-const {
-  handlegenerateNewShortURL,
-  handleGetAnalytics,
-} = require("../controllers/url");
+const { getUserQuery } = require("../controllers/generateQuiz");
+const authMiddleware = require("../middlewares/auth");
 
-router.post("/", handlegenerateNewShortURL);
-router.get("/analytics/:shortId", handleGetAnalytics);
+router.post("/", authMiddleware, getUserQuery);
 
 module.exports = router;

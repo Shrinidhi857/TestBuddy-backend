@@ -1,8 +1,24 @@
-const express = required("express");
+const express = require("express");
+const fetch = require("node-fetch");
+
+async function getUserQuery(req, res) {
+  try {
+    const text = req.body.text;
+    const QuizJson = await GenerateQuiz(text);
+
+    if (!QuizJson) {
+      return res.status(500).json({ error: "Failed to generate quiz" });
+    }
+    res.json(QuizJson);
+  } catch (err) {
+    console.error("Error in getUserQuery:", err);
+    res.status(500).json({ error: "Server error" });
+  }
+}
 
 async function GenerateQuiz(userText) {
-  const res = await fetch(
-    "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=AIzaSyD1_28vu9n-Fn4YfcKdXL7E3AvjuW2pb0c",
+  const response = await fetch(
+    "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=AIzaSyAarZQf21RO5ByZtOV7XIBY6fRqfDlknZ4",
     {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -12,7 +28,7 @@ async function GenerateQuiz(userText) {
     }
   );
 
-  const data = await res.json();
+  const data = await response.json();
   const output = data.candidates?.[0]?.content?.parts?.[0]?.text || "";
 
   try {
@@ -25,11 +41,16 @@ async function GenerateQuiz(userText) {
 
     const jsonString = output.substring(jsonStart, jsonEnd);
     const parsed = JSON.parse(jsonString);
-    console.log("✅Quiz got fetched!");
+
+    console.log("✅ Quiz fetched successfully!");
+    return parsed;
   } catch (parseError) {
-    console.error("Failed to parse quiz data:", parseError);
+    console.error("⚠️Failed to parse quiz data:", parseError);
+    return null;
   }
 }
+
 module.exports = {
+  getUserQuery,
   GenerateQuiz,
 };

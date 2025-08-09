@@ -1,6 +1,6 @@
 const userService = require("../services/auth");
 
-exports.register = async (req, res) => {
+async function register(req, res) {
   const { username, password } = req.body;
   try {
     const user = await userService.register(username, password);
@@ -8,9 +8,9 @@ exports.register = async (req, res) => {
   } catch (err) {
     res.status(400).json({ error: err.message });
   }
-};
+}
 
-exports.login = async (req, res) => {
+async function login(req, res) {
   const { username, password } = req.body;
   try {
     const data = await userService.login(username, password);
@@ -18,8 +18,14 @@ exports.login = async (req, res) => {
   } catch (err) {
     res.status(401).json({ error: err.message });
   }
-};
+}
 
-exports.protected = (req, res) => {
+async function protected(req, res) {
   res.json({ message: "Access granted to protected route", user: req.user });
+}
+
+module.exports = {
+  protected,
+  login,
+  register,
 };

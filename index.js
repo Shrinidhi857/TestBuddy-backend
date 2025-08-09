@@ -2,13 +2,14 @@ const express = require("express");
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 const userRoutes = require("./routes/user");
-const { GenerateQuiz } = require("./controllers/generateQuiz");
+const quizRoutes = require("./routes/quiz");
 
 dotenv.config();
 
 const app = express();
 app.use(express.json());
 app.use("/api/users", userRoutes);
+app.use("/api/quiz", quizRoutes);
 
 const PORT = process.env.PORT || 5000;
 
@@ -22,5 +23,3 @@ mongoose
     app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
   })
   .catch((err) => console.error("MongoDB connection error:", err));
-
-app.use("/api/quiz", GenerateQuiz);
