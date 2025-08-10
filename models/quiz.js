@@ -4,7 +4,6 @@ const quizSchema = new mongoose.Schema({
   no: {
     type: Number,
     required: true,
-    unique: true,
   },
   title: {
     type: String,

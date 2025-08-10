@@ -108,10 +108,38 @@ async function getParticularFlashCard(req, res) {
   }
 }
 
+async function deleteParticularFlashCard(req, res) {
+  try {
+    const { flashgroupName } = req.body;
+    const userId = req.user._id;
+
+    if (!flashgroupName) {
+      return res.status(400).json({ message: "flashCardName is required" });
+    }
+
+    console.log("User ID from token:", userId);
+    console.log("flashCardName from body:", flashgroupName);
+
+    const deletedFlashCard = await FlashCard.findOneAndDelete({
+      flashGroupName: { $regex: new RegExp(`^${flashgroupName}$`, "i") }, // case-insensitive
+      userId: new ObjectId(String(userId)),
+    });
+
+    if (!deletedFlashCard) {
+      return res.status(404).json({ message: "FlashCard not found" });
+    }
+
+    res.json({ message: "FlashCard deleted successfully", deletedFlashCard });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+}
+
 module.exports = {
   getUserFlashCard,
   GenerateFlashCard,
   saveFlashCard,
   getAllFlashCards,
   getParticularFlashCard,
+  deleteParticularFlashCard,
 };

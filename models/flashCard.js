@@ -16,7 +16,7 @@ const flashCardSchema = mongoose.Schema({
 
 const flashCardGroup = new mongoose.Schema({
   userId: { type: mongoose.Schema.Types.ObjectId, required: true },
-  flashGroupName: { type: String, required: true },
+  flashGroupName: { type: String, required: true, unique: true },
   flashCards: [flashCardSchema],
 });
 

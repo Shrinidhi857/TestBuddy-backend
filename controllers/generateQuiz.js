@@ -106,7 +106,34 @@ async function getParticularQuiz(req, res) {
       return res.status(404).json({ message: "Quiz not found" });
     }
 
-    res.json(quiz);
+    res.status(200).json(quiz);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+}
+
+async function deleteParticularQuiz(req, res) {
+  try {
+    const { quizName } = req.body;
+    const userId = req.user._id;
+
+    if (!quizName) {
+      return res.status(400).json({ message: "quizName is required" });
+    }
+
+    console.log("User ID from token:", userId);
+    console.log("Quiz name from body:", quizName);
+
+    const deletedQuiz = await Quiz.findOneAndDelete({
+      quizName: { $regex: new RegExp(`^${quizName}$`, "i") }, // case-insensitive
+      userId: new ObjectId(String(userId)), // match type
+    });
+
+    if (!deletedQuiz) {
+      return res.status(404).json({ message: "Quiz not found" });
+    }
+
+    res.json({ message: "Quiz deleted successfully", deletedQuiz });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
@@ -118,4 +145,5 @@ module.exports = {
   saveQuiz,
   getAllQuiz,
   getParticularQuiz,
+  deleteParticularQuiz,
 };
