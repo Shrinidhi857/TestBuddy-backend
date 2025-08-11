@@ -4,11 +4,15 @@ const dotenv = require("dotenv");
 const userRoutes = require("./routes/user");
 const quizRoutes = require("./routes/quiz");
 const flashCardRoutes = require("./routes/flashCard");
+const cors = require("cors");
 
 dotenv.config();
 
 const app = express();
+
+app.use(cors()); // <-- after app is created
 app.use(express.json());
+
 app.use("/api/users", userRoutes);
 app.use("/api/quiz", quizRoutes);
 app.use("/api/flashCard", flashCardRoutes);

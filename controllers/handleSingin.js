@@ -31,6 +31,7 @@ async function login(req, res) {
       process.env.JWT_SECRET,
       { expiresIn: "1h" }
     );
+    console.log(token);
 
     res.json({
       message: "Login successful",
