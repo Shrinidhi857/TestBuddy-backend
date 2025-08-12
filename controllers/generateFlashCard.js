@@ -22,8 +22,9 @@ async function getUserFlashCard(req, res) {
 }
 
 async function GenerateFlashCard(userText) {
+  const API_key = process.env.GEMINI_API_KEY;
   const response = await fetch(
-    "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=AIzaSyAarZQf21RO5ByZtOV7XIBY6fRqfDlknZ4",
+    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${API_key}`,
     {
       method: "POST",
       headers: { "Content-Type": "application/json" },
